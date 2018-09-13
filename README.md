@@ -32,6 +32,9 @@ Anywhere in you computer, run:
 docker exec -i -t  simple_container /bin/bash
 ```
 ### Export the image to docker hub
+Documentation from  https://docs.docker.com/docker-cloud/builds/push-images/
+Anywhere in you computer, run:
+
 ```shell
 export DOCKER_ID_USER="username"
 docker login
@@ -40,36 +43,24 @@ docker push $DOCKER_ID_USER/simple_image
 ```
 
 
-
-
-## Export the image to docker hub (from https://docs.docker.com/docker-cloud/builds/push-images/)
-
-In a terminal window, set the environment variable DOCKER_ID_USER as your username in Docker Cloud.
-
-This allows you to copy and paste the commands directly from this tutorial.
+### Import the image from docker hub to NERSC
+On cori, run:
 ```shell
- $ export DOCKER_ID_USER="username"
- ```
-If you don’t want to set this environment variable, change the examples in this tutorial to replace DOCKER_ID_USER with your Docker Cloud username.
+shifterimg -v pull docker:<username>/simple_image:latest
+```
+(chage <username> by your docker hub username)
 
-Log in to Docker Cloud using the docker login command.
+### Check the image export on cori
+On cori, run:
 ```shell
- $ docker login
- ```
-This logs you in using your Docker ID, which is shared between both Docker Hub and Docker Cloud.
+shifterimg images | grep simple_image
+```
 
-If you have never logged in to Docker Hub or Docker Cloud and do not have a Docker ID, running this command prompts you to create a Docker ID.
-
-Tag your image using docker tag.
-
-In the example below replace my_image with your image’s name, and DOCKER_ID_USER with your Docker Cloud username if needed.
+### Execute the image:
+On cori, run:
 ```shell
- $ docker tag my_image $DOCKER_ID_USER/my_image
- ```
-Push your image to Docker Hub using docker push (making the same replacements as in the previous step).
-```shell
- $ docker push $DOCKER_ID_USER/my_image
- ```
-Check that the image you just pushed appears in Docker Cloud.
+shifter --image=<username>/simple_image <cmd>
+```
+Replace `<cmd>` by any commad that you want to execute inside the image, it can be a bash script, an executable... If you want to start a bash session replace it by `/bin/bash`.
 
-Go to Docker Cloud and navigate to the Repositories tab and confirm that your image appears in this list.
+The variable `SHIFTER_RUNTIME` tells you if you are inside an image or not
